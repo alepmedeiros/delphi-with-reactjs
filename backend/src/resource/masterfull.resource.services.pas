@@ -10,6 +10,7 @@ uses
   SimpleAttributes,
   SimpleQueryFiredac,
   System.JSON,
+  System.Variants,
   REST.JSON,
   System.SysUtils,
   System.Classes,
@@ -27,16 +28,20 @@ uses
   FireDAC.Phys.SQLiteDef,
   FireDAC.ConsoleUI.Wait,
   FireDAC.Comp.Client,
+  DataSet.Serialize,
+  GBJSON.Interfaces,
+  GBJSON.Helper,
   masterfull.resource.connect;
 
 type
   iService<T: class> = interface
-    function Find(Id: Integer): T;
-    function FindAll: TObjectList<T>;
-    function FindWhere(Key: String; Value: Variant): TObjectList<T>;
-    function Insert(Value: T): T;
-    function Update(Value: T): T;
-    function Delete(Value: Variant): iService<T>;
+    function Find(const Id: Variant): TJSONObject;
+    function FindAll: TJSONArray;
+    function FindWhere(Key: String; Value: Variant): TJSONArray;
+    function Insert(const Json: TJSONObject): TJSONObject;
+    function Update(const Json: TJSONObject): TJSONObject;
+    function Delete(Key: String; Value: Variant): iService<T>;
+    function DataSet: TDataSet;
   end;
 
   TService<T: class, constructor> = class(TInterfacedObject, iService<T>)
@@ -49,12 +54,13 @@ type
     constructor Create;
     destructor Destroy; override;
     class function New: TService<T>;
-    function Find(Id: Integer): T;
-    function FindAll: TObjectList<T>;
-    function FindWhere(Key: String; Value: Variant): TObjectList<T>;
-    function Insert(Value: T): T;
-    function Update(Value: T): T;
-    function Delete(Value: Variant): iService<T>;
+    function Find(const Id: Variant): TJSONObject;
+    function FindAll: TJSONArray;
+    function FindWhere(Key: String; Value: Variant): TJSONArray;
+    function Insert(const Json: TJSONObject): TJSONObject;
+    function Update(const Json: TJSONObject): TJSONObject;
+    function Delete(Key: String; Value: Variant): iService<T>;
+    function DataSet: TDataSet;
   end;
 
 implementation
@@ -67,10 +73,15 @@ begin
   FDAO := TSimpleDAO<T>.New(FConn).DataSource(FDataSource);
 end;
 
-function TService<T>.Delete(Value: Variant): iService<T>;
+function TService<T>.DataSet: TDataSet;
+begin
+  Result := FDataSource.DataSet;
+end;
+
+function TService<T>.Delete(Key: String; Value: Variant): iService<T>;
 begin
   Result := Self;
-  FDAO.Delete('id',Value);
+  FDAO.Delete(Key,Value);
 end;
 
 destructor TService<T>.Destroy;
@@ -79,26 +90,38 @@ begin
   inherited;
 end;
 
-function TService<T>.Find(Id: Integer): T;
+function TService<T>.Find(const Id: Variant): TJSONObject;
 begin
-  Result := FDAO.Find(Id);
+  FDAO.Find(Integer(Id));
+  Result := FDataSource.DataSet.ToJsonObject;
 end;
 
-function TService<T>.FindAll: TObjectList<T>;
+function TService<T>.FindAll: TJSONArray;
 begin
-  Result := TObjectList<T>.Create;
-  FDAO.Find(Result);
+  FDAO.Find(False);
+  Result := FDataSource.DataSet.toJSonArray;
 end;
 
-function TService<T>.FindWhere(Key: String; Value: Variant): TObjectList<T>;
+function TService<T>.FindWhere(Key: String; Value: Variant): TJSONArray;
 begin
   FDAO.Find(Key,Value);
+  Result := FDataSource.DataSet.ToJsonArray;
 end;
 
-function TService<T>.Insert(Value: T): T;
+function TService<T>.Insert(const Json: TJSONObject): TJSONObject;
+var
+  lObj: T;
 begin
-  FDAO.Insert(Value);
-  Result := Value;
+  lObj := T.Create;
+  try
+    TGBJSONConfig.GetInstance.CaseDefinition(TCaseDefinition.cdLower);
+    TGBJSONDefault.Serializer<T>(False).JsonObjectToObject(lObj, Json);
+    lObj.fromJSONObject(Json);
+    FDAO.Insert(lObj);
+    Result := FDataSource.DataSet.ToJSONObject;
+  finally
+    lObj.Free;
+  end;
 end;
 
 class function TService<T>.New: TService<T>;
@@ -106,10 +129,20 @@ begin
   Result := Self.Create;
 end;
 
-function TService<T>.Update(Value: T): T;
+function TService<T>.Update(const Json: TJSONObject): TJSONObject;
+var
+  lObj: T;
 begin
-  FDAO.Update(Value);
-  Result := Value;
+  lObj:= T.Create;
+  try
+    TGBJSONConfig.GetInstance.CaseDefinition(TCaseDefinition.cdLower);
+    TGBJSONDefault.Serializer<T>(False).JsonObjectToObject(lObj, Json);
+    lObj.fromJSONObject(Json);
+    FDAO.Update(lobj);
+    Result := FDataSource.DataSet.ToJSONObject;
+  finally
+    lObj.Free;
+  end;
 end;
 
 end.

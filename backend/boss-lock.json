@@ -2,6 +2,14 @@
 	"hash": "d41d8cd98f00b204e9800998ecf8427e",
 	"updated": "2023-04-29T11:02:47.3082583-03:00",
 	"installedModules": {
+		"github.com/andre-djsystem/hashlib4pascal": {
+			"name": "hashlib4pascal",
+			"version": "1.0.0",
+			"hash": "8528036224699ab509c7d8f31d691ffb",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		},
 		"github.com/hashload/horse": {
 			"name": "horse",
 			"version": "3.1.1",
@@ -18,6 +26,14 @@
 			"failed": false,
 			"changed": false
 		},
+		"github.com/hashload/horse-jwt": {
+			"name": "horse-jwt",
+			"version": "2.0.13",
+			"hash": "b6889d63cf81f0450de2b23562a8af48",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		},
 		"github.com/hashload/jhonson": {
 			"name": "jhonson",
 			"version": "1.1.6",
@@ -26,10 +42,34 @@
 			"failed": false,
 			"changed": false
 		},
+		"github.com/paolo-rossi/delphi-jose-jwt": {
+			"name": "delphi-jose-jwt",
+			"version": "v3.2.0",
+			"hash": "eadfcb98abd01d919ed5be0d0b5cd5e7",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		},
 		"https://github.com/academiadocodigo/simpleorm": {
 			"name": "simpleorm",
 			"version": "2.02.10",
 			"hash": "75aebbc9d46f7ec63a6fba7640e3c1e0",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		},
+		"https://github.com/gabrielbaltazar/gbjson": {
+			"name": "gbjson",
+			"version": "1.0.11",
+			"hash": "9f3f8d23501e9249638dd6a332a536c0",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		},
+		"https://github.com/viniciussanchez/dataset-serialize": {
+			"name": "dataset-serialize",
+			"version": "v2.4.9",
+			"hash": "0df5fa71a508ce66a50ef649231af9c9",
 			"artifacts": {},
 			"failed": false,
 			"changed": false
