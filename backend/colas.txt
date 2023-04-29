@@ -1,0 +1,4 @@
+https://en.delphipraxis.net/topic/6978-trouble-getting-json-findvalue-jsonpath-to-work/
+https://www.udemy.com/course/desenvolva-aplicacoes-completas-com-spring-boot-e-react-js
+https://dsandrade0.medium.com/criando-um-projeto-com-spring-boot-e-reactjs-d3ac6df48e68
+https://www.udemy.com/course/nextjs-e-react/learn/lecture/27520804#overview
